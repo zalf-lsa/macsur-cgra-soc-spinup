@@ -1,0 +1,156 @@
+{
+	"output": {
+		"GM": [
+			"crop", [
+				["Year", "LAST"],
+				["DOY|SowDOY", "FIRST"],
+				["LAI|MaxLAI", "MAX"],
+				["PercolationRate|WDrain", 15, "SUM"],
+				["Act_ET|CumET", "SUM"],
+				["Act_Ev|Evap", "SUM"],
+				["Mois|SoilAvW", [1, 15, "SUM"], "LAST"],
+				["RunOff|Runoff", "SUM"],
+				["ET0|Eto", "SUM"],
+				["Tmax|TMAXAve", "AVG"],
+
+				["Yield", "LAST"],
+				["AbBiom|Biom-ma", "LAST"],
+				["AbBiomN|CroN-ma", "LAST"],
+				["GrainN", "LAST"]
+			],
+
+			{"while": ["Stage", "=", 5]}, [
+				["DOY|AntDOY", "FIRST"],
+				["AbBiom|Biom-an", "First"],
+				["AbBiomN|CroN-an", "FIRST"]
+			],
+
+			{"while": ["Stage", "=", 7]}, [
+				["Yield", "FIRST"],
+				["DOY|MatDOY", "FIRST"], 
+				["AbBiom|Biom-ma", "First"],
+				["AbBiomN|CroN-ma", "FIRST"],
+				["GrainN", "FIRST"]
+			],
+			
+			{"while": ["Stage", "=", 2]}, [
+				["DOY|EmergDOY", "FIRST"]
+			]
+		],
+
+		"WW": [
+			"crop", [
+				["Year", "LAST"],
+				["DOY|SowDOY", "FIRST"],
+				["LAI|MaxLAI", "MAX"],
+				["PercolationRate|WDrain", 15, "SUM"],
+				["Act_ET|CumET", "SUM"],
+				["Act_Ev|Evap", "SUM"],
+				["Mois|SoilAvW", [1, 15, "SUM"], "LAST"],
+				["Runoff", "SUM"],
+				["ET0|Eto", "SUM"],
+				["Tmax|TMAXAve", "AVG"],
+
+				["Yield", "LAST"],
+				["AbBiom|Biom-ma", "LAST"],
+				["AbBiomN|CroN-ma", "LAST"],
+				["GrainN", "LAST"]
+			],
+
+			{"while": ["Stage", "=", 4]}, [
+				["DOY|AntDOY", "FIRST"],
+				["AbBiom|Biom-an", "First"],
+				["AbBiomN|CroN-an", "FIRST"]				
+			],
+					
+			{"while": ["Stage", "=", 6]}, [
+				["Yield", "FIRST"],
+				["DOY|MatDOY", "FIRST"], 
+				["AbBiom|Biom-ma", "First"],
+				["AbBiomN|CroN-ma", "FIRST"],
+				["GrainN", "FIRST"]
+			],
+			
+			{"while": ["Stage", "=", 2]}, [
+				["DOY|EmergDOY", "FIRST"]
+			]
+		]
+	},
+
+	"irrigation-amount": {
+		"WW": 10,
+		"GM": 15
+	},
+
+	"treatments": [
+		{
+			"TrtNo": "T1",
+			"Irrig": "Full",
+			"ProdCase": "Pot",
+			"UseAutomaticIrrigation": true,
+			"HeatSumIrrigation": true,
+			"SensitivePhaseHeatStress": false
+		},
+		{
+			"TrtNo": "T2",
+			"Irrig": "Full",
+			"ProdCase": "HL_air",
+			"UseAutomaticIrrigation": true,
+			"HeatSumIrrigation": true,
+			"SensitivePhaseHeatStress": true
+		},
+		{
+			"TrtNo": "T4",
+			"Irrig": "Rain",
+			"ProdCase": "WL",
+			"UseAutomaticIrrigation": false,
+			"SensitivePhaseHeatStress": false
+		},
+		{
+			"TrtNo": "T5",
+			"Irrig": "Rain",
+			"ProdCase": "WHL_air",
+			"UseAutomaticIrrigation": false,
+			"SensitivePhaseHeatStress": true
+		}
+	],
+
+	"__treatments": [
+		{
+			"TrtNo": "T1",
+			"Irrig": "Full",
+			"ProdCase": "Pot",
+			"UseAutomaticIrrigation": true
+		},
+		{
+			"TrtNo": "T2",
+			"Irrig": "Full",
+			"ProdCase": "HL_air",
+			"UseAutomaticIrrigation": true
+		},
+		{
+			"TrtNo": "T3",
+			"Irrig": "Full",
+			"ProdCase": "HL_can",
+			"UseAutomaticIrrigation": false
+		},
+		{
+			"TrtNo": "T4",
+			"Irrig": "Rain",
+			"ProdCase": "WL",
+			"UseAutomaticIrrigation": false
+		},
+		{
+			"TrtNo": "T5",
+			"Irrig": "Rain",
+			"ProdCase": "WHL_air",
+			"UseAutomaticIrrigation": false
+		},
+		{
+			"TrtNo": "T6",
+			"Irrig": "Rain",
+			"ProdCase": "WHL_can",
+			"UseAutomaticIrrigation": false
+		}
+	]
+}
