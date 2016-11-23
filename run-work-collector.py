@@ -16,8 +16,8 @@
 # Copyright (C: Leibniz Centre for Agricultural Landscape Research (ZALF)
 
 import sys
-sys.path.insert(0, "C:\\Users\\berg.ZALF-AD\\GitHub\\monica\\project-files\\Win32\\Release")
-sys.path.insert(0, "C:\\Users\\berg.ZALF-AD\\GitHub\\monica\\src\\python")
+sys.path.insert(0, "C:\\Users\\stella\\Documents\\GitHub\\monica\\project-files\\Win32\\Release")
+sys.path.insert(0, "C:\\Users\\stella\\Documents\\GitHub\\monica\\src\\python")
 print sys.path
 
 import gc
@@ -36,7 +36,7 @@ import monica_io
 
 #gc.enable()
 
-def create_output(row, col, crop_id, co2_id, co2_value, period, gcm, trt_no, irrig, prod_case, result):
+def create_output(row, col, crop_id, result):
     "create crop output lines"
 
     out = []
@@ -72,50 +72,24 @@ def create_output(row, col, crop_id, co2_id, co2_value, period, gcm, trt_no, irr
                     else:
                         vals[name] = val
 
-            if crop_id == "WW" or vals.get("Year", 0) > 1980:
+            if crop_id == "WW" or vals.get("Year", 0):
                 out.append([
-                    "MO",
                     str(row) + "_" + str(col),
                     "Maize" if crop_id == "GM" else "WW",
-                    co2_id,
-                    period,
-                    gcm,
-                    str(co2_value),
-                    trt_no,
-                    irrig,
-                    prod_case,
                     vals.get("Year", "na"),
-                    vals.get("Yield", "na"),
-                    vals.get("AntDOY", "na"),
-                    vals.get("MatDOY", "na"),
-                    vals.get("GNumber", "na"),
-                    vals.get("Biom-an", "na"),
-                    vals.get("Biom-ma", "na"),
-                    vals.get("MaxLAI", "na"),
-                    vals.get("WDrain", "na"),
-                    vals.get("CumET", "na"),
-                    vals.get("SoilAvW", "na") * 100.0,
-                    vals.get("Runoff", "na"),
-                    vals["CumET"] - vals["Evap"] if "CumET" in vals and "Evap" in vals else "na",
-                    vals.get("Evap", "na"),
-                    vals.get("CroN-an", "na"),
-                    vals.get("CroN-ma", "na"),
-                    vals.get("GrainN", "na"),
-                    vals.get("Eto", "na"),
-                    vals.get("SowDOY", "na"),
-                    vals.get("EmergDOY", "na"),
-                    vals.get("TcMaxAve", "na"),
-                    vals.get("TMAXAve", "na")
+                    vals.get("SOCtop", "na"),
+                    vals.get("SOCbottom", "na"),
+                    vals["NO3"] + vals["NH4"] if "NO3" in vals and "NH4" in vals else "na",                   
+                    vals.get("NLeach", "na"),
+                    vals.get("Rh", "na"),
+                    vals.get("Yield", "na")
                 ])
 
     return out
 
 
-HEADER = "Model,row_col,Crop,ClimPerCO2_ID,period," \
-         + "sce,CO2,TrtNo,Irrigation,ProductionCase," \
-         + "Year,Yield,AntDOY,MatDOY,GNumber,Biom-an,Biom-ma," \
-         + "MaxLAI,WDrain,CumET,SoilAvW,Runoff,Transp,Evap,CroN-an,CroN-ma," \
-         + "GrainN,Eto,SowDOY,EmergDOY,TcMaxAve,TMAXAve" \
+HEADER = "row_col,Crop," \
+         + "Year,SOCtop,SOCbottom,Nmin,NLeach,Rh,Yield" \
          + "\n"
 
 def write_data(row, col, data):
@@ -151,14 +125,7 @@ def collector():
     while not leave:
 
         try:
-            #result = socket.recv_json()
             result = socket.recv_json(encoding="latin-1")
-            #result = socket.recv_string(encoding="latin-1")
-            #result = socket.recv_string()
-            #print result
-            #with open("out/out-latin1.csv", "w") as _:
-            #    _.write(result)
-            #continue
         except:
             for row, col in data.keys():
                 if len(data[(row, col)]) > 0:
@@ -176,16 +143,9 @@ def collector():
             ci_parts = custom_id.split("|")
             crop_id = ci_parts[0]
             row_, col_ = ci_parts[1][1:-1].split("/")
-            row, col = (int(row_), int(col_))
-            period = ci_parts[2]
-            gcm = ci_parts[3]
-            co2_id, co2_value_ = ci_parts[4][1:-1].split("/")
-            co2_value = int(co2_value_)
-            trt_no = ci_parts[5]
-            irrig = ci_parts[6]
-            prod_case = ci_parts[7]
+            row, col = (int(row_), int(col_))           
 
-            res = create_output(row, col, crop_id, co2_id, co2_value, period, gcm, trt_no, irrig, prod_case, result)
+            res = create_output(row, col, crop_id, result)
             data[(row, col)].extend(res)
 
             if len(data[(row, col)]) >= start_writing_lines_threshold:

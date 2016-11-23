@@ -29,7 +29,13 @@
 		},
 
 		"events": [
-			"daily", ["Date", "Crop", "Yield"]
+			"yearly", [
+				"Year", ["SOC|SOCtop", [1, 3, "AVG"], "AVG"], ["SOC|SOCbottom", [4, 20, "AVG"], "AVG"], ["NO3", [1, 5, "SUM"], "AVG"], ["NH4", [1, 5, "SUM"], "AVG"], ["NLeach", "SUM"], ["Rh", "SUM"]
+			],
+
+			"harvesting",[
+				"Yield"
+			]		
 		]
 	},
 
@@ -37,23 +43,23 @@
 	"LayerThickness": [0.1, "m"],
 
 	"UseSecondaryYields": false,
-	"NitrogenResponseOn": false,
+	"NitrogenResponseOn": true,
 	"WaterDeficitResponseOn": true,
 	"EmergenceMoistureControlOn": false,
 	"EmergenceFloodingControlOn": false,
 
-	"UseAutomaticIrrigation": false,
+	"UseAutomaticIrrigation": true,
 	"AutoIrrigationParams": {
 		"irrigationParameters": {
 			"nitrateConcentration": [0, "mg dm-3"],
 			"sulfateConcentration": [0, "mg dm-3"]
 		},
-		"amount": [0, "mm"],
+		"amount": [10, "mm"],
 		"threshold": 0.9
 	},
 
-	"UseNMinMineralFertilisingMethod": false,
-	"NMinUserParams": { "min": 40, "max": 120, "delayInDays": 10 },
+	"UseNMinMineralFertilisingMethod": true,
+	"NMinUserParams": { "min": 20, "max": 110, "delayInDays": 20 },
 	"NMinFertiliserPartition": ["include-from-file", "monica-parameters/mineral-fertilisers/AN.json"],
 	"JulianDayAutomaticFertilising": 89
 }
