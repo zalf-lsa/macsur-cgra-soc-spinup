@@ -41,7 +41,7 @@ import monica_io
 #print "sys.version: ", sys.version
 
 #PATH_TO_CLIMATE_DATA = "A:/macsur-eu-heat-stress-transformed/"
-START_YEAR = 1980
+START_YEAR = 1900
 PATH_TO_CLIMATE_DATA_SERVER = "/archiv-daten/md/projects/macsur-cgra-soc-spinup/climate-data/0/0_0_1890_2010/"
 #PATH_TO_CLIMATE_DATA = "B:/md/berg/macsur-eu-heat-stress-transformed/"
 
@@ -244,7 +244,7 @@ def main():
 
             env["params"]["userEnvironmentParameters"]["AtmosphericCO2"] = 360
 
-            climate_filename = "{}_{:03d}_v1.csv".format(row, col)
+            climate_filename = "{}_{:03d}_1890-2010.csv".format(row, col)
             
             #read climate data on the server and send just the path to the climate data csv file
             env["pathToClimateCSV"] = PATH_TO_CLIMATE_DATA_SERVER + climate_filename
