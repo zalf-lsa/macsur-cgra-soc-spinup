@@ -41,6 +41,7 @@ def create_output(row, col, crop_id, result):
 
     out = []
     if len(result.get("data", [])) > 0 and len(result["data"][0].get("results", [])) > 0:
+        prev_vals = {}
         for kkk in range(0, len(result["data"][0]["results"][0])):
             vals = {}
 
@@ -72,26 +73,43 @@ def create_output(row, col, crop_id, result):
                     else:
                         vals[name] = val
 
-            if crop_id == "WW" or vals.get("Year", 0):
-                out.append([
-                    str(row) + "_" + str(col),
-                    "Maize" if crop_id == "GM" else "WW",
-                    vals.get("Year", "na"),
-                    vals.get("SOCtop", "na"),
-                    vals.get("SOCbottom", "na"),
-                    vals["NO3"] + vals["NH4"] if "NO3" in vals and "NH4" in vals else "na",                   
-                    vals.get("NLeach", "na"),
-                    vals.get("Rh", "na"),
-                    vals.get("Yield", "na")
-                ])
+            out.append([
+                str(row) + "_" + str(col),
+                "Maize" if crop_id == "GM" else "WW",
+                vals.get("Year", "na"),
+                vals.get("SOCtop", "na"),
+                vals.get("SOCbottom", "na"),
+                (vals["SOCtop"] - prev_vals["SOCtop"]) / prev_vals["SOCtop"] if "SOCtop" in vals and "SOCtop" in prev_vals else "na",
+                (vals["SOCbottom"] - prev_vals["SOCbottom"]) / prev_vals["SOCbottom"] if "SOCbottom" in vals and "SOCbottom" in prev_vals else "na",
+                vals["NO3"] + vals["NH4"] if "NO3" in vals and "NH4" in vals else "na",                   
+                vals.get("NLeach", "na"),
+                vals.get("Rh", "na"),
+                vals.get("NEP", "na"),
+                vals.get("Yield", "na")
+            ])
+            
+            #out.append([
+            #    str(row) + "_" + str(col),
+            #    "WW",
+            #    vals.get("Year", "na"),
+            #    vals.get("Tmin", "na"),
+            #    vals.get("Tavg", "na"),
+            #    vals.get("Tmax", "na"),
+            #    vals.get("Precip", "na"),
+            #    vals.get("Globrad", "na"),
+            #])
+
+
+            prev_vals = vals
 
     return out
 
 
 HEADER = "row_col,Crop," \
-         + "Year,SOCtop,SOCbottom,Nmin,NLeach,Rh,Yield" \
+         + "Year,SOCtop,SOCbottom,DeltaSOCtop,DeltaSOCbottom,Nmin,NLeach,Rh,NEP,Yield" \
          + "\n"
-
+#+ "Year,Tmin,Tavg,Tmax,Precip,Globrad" \
+         
 def write_data(row, col, data):
     "write data"
 
@@ -122,7 +140,7 @@ def collector():
     socket.RCVTIMEO = 1000
     leave = False
     write_normal_output_files = False
-    start_writing_lines_threshold = 5880
+    start_writing_lines_threshold = 30
     while not leave:
 
         try:
