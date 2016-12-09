@@ -25,9 +25,9 @@ from datetime import date, datetime, timedelta
 from collections import defaultdict
 #import types
 import sys
-sys.path.insert(0, "C:\\Users\\stella\\Documents\\GitHub\\monica\\project-files\\Win32\\Release")
+#sys.path.insert(0, "C:\\Users\\berg.ZALF-AD\\GitHub\\monica\\project-files\\Win32\\Release")
 #sys.path.insert(0, "C:\\Users\\berg.ZALF-AD\\GitHub\\monica\\project-files\\Win32\\Debug")
-sys.path.insert(0, "C:\\Users\\stella\\Documents\\GitHub\\monica\\src\\python")
+#sys.path.insert(0, "C:\\Users\\berg.ZALF-AD\\GitHub\\monica\\src\\python")
 print sys.path
 #sys.path.append('C:/Users/berg.ZALF-AD/GitHub/util/soil')
 #from soil_conversion import *
@@ -58,11 +58,13 @@ def main():
     }
     if len(sys.argv) > 1:
         for arg in sys.argv[1:]:
-            k,v = arg.split("=")
-            if k in config:
-                config[k] = int(v) 
+            kkk, vvv = arg.split("=")
+            if kkk in config:
+                config[kkk] = int(vvv)
 
-    socket.bind("tcp://*:" + str(config["port"]))
+    #socket.bind("tcp://*:" + str(config["port"]))
+    #socket.connect("tcp://localhost:" + str(config["port"]))
+    socket.connect("tcp://cluster2:" + str(config["port"]))
 
     with open("sim.json") as _:
         sim = json.load(_)
@@ -76,8 +78,8 @@ def main():
     with open("sims.json") as _:
         sims = json.load(_)
 
-    sim["include-file-base-path"] = "C:/Users/stella/MONICA"
-    
+    sim["include-file-base-path"] = "C:/Users/berg.ZALF-AD/MONICA"
+
     def read_pheno(path_to_file):
         "read phenology data"
         with open(path_to_file) as _:
@@ -168,7 +170,7 @@ def main():
         ppp = pheno[crop_id][(row, col)]
 
         extended_harvest_doy = ppp["harvest-doy"] + 10
-        start_date = date(START_YEAR, 1, 1) 
+        start_date = date(START_YEAR, 1, 1)
         sim["climate.csv-options"]["start-date"] = start_date.isoformat()
         end_date = date(2010, 12, 31)
         sim["climate.csv-options"]["end-date"] = end_date.isoformat()
@@ -185,7 +187,7 @@ def main():
 
         crop["cropRotation"][0]["worksteps"][1]["date"] = seeding_date.strftime("0000-%m-%d")
         crop["cropRotation"][0]["worksteps"][1]["crop"][2] = crop_id
-        
+
         harvest_date = date(START_YEAR + (1 if is_wintercrop else 0), 1, 1) + timedelta(days=extended_harvest_doy)
         #harvest_date = date(1980, 12, 31) if crop_id == "GM" else date(1980 + (1 if is_wintercrop else 0), 1, 1) + timedelta(days=ppp["harvest-doy"])
         crop["cropRotation"][0]["worksteps"][2]["date"] = harvest_date.strftime("000" + ("1" if is_wintercrop else "0") + "-%m-%d")
@@ -218,7 +220,7 @@ def main():
         #print site["SiteParameters"]["SoilProfileParameters"]
 
     print "# of rowsCols = ", len(row_cols)
-    
+
     i = 0
     start_store = time.clock()
     start = config["start"] - 1
@@ -238,18 +240,15 @@ def main():
                 "climate": ""
             })
 
-            
             env["csvViaHeaderOptions"] = sim["climate.csv-options"]
-
 
             env["params"]["userEnvironmentParameters"]["AtmosphericCO2"] = 360
 
             climate_filename = "{}_{:03d}_v1.csv".format(row, col)
-            
+
             #read climate data on the server and send just the path to the climate data csv file
             env["pathToClimateCSV"] = PATH_TO_CLIMATE_DATA_SERVER + climate_filename
-            
-            
+
             cal = calib[crop_id][(row, col)]
             cultivar = env["cropRotation"][0]["worksteps"][1]["crop"]["cropParams"]["cultivar"]
             cultivar["CropSpecificMaxRootingDepth"] = 1.5
@@ -259,12 +258,12 @@ def main():
             cultivar["HeatSumIrrigationStart"] = cal["HeatSumIrrigationStart"]
             cultivar["HeatSumIrrigationEnd"] = cal["HeatSumIrrigationEnd"]
 
-            env["customId"] = crop_id + "|(" + str(row) + "/" + str(col) + ")"                                
+            env["customId"] = crop_id + "|(" + str(row) + "/" + str(col) + ")"
 
             socket.send_json(env)
             print "sent env ", i, " customId: ", env["customId"]
             i += 1
-        
+
             #break
         #break
 

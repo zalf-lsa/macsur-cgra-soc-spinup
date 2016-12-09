@@ -16,8 +16,8 @@
 # Copyright (C: Leibniz Centre for Agricultural Landscape Research (ZALF)
 
 import sys
-sys.path.insert(0, "C:\\Users\\stella\\Documents\\GitHub\\monica\\project-files\\Win32\\Release")
-sys.path.insert(0, "C:\\Users\\stella\\Documents\\GitHub\\monica\\src\\python")
+#sys.path.insert(0, "C:\\Users\\stella\\Documents\\GitHub\\monica\\project-files\\Win32\\Release")
+#sys.path.insert(0, "C:\\Users\\stella\\Documents\\GitHub\\monica\\src\\python")
 print sys.path
 
 import gc
@@ -117,7 +117,8 @@ def collector():
     i = 0
     context = zmq.Context()
     socket = context.socket(zmq.PULL)
-    socket.bind("tcp://*:7777")
+    #socket.connect("tcp://localhost:7777")
+    socket.connect("tcp://cluster2:7777")
     socket.RCVTIMEO = 1000
     leave = False
     write_normal_output_files = False
