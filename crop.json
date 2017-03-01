@@ -31,7 +31,5 @@
 		}
 	],
 
-	"CropParameters": {
-		"DEFAULT": ["include-from-file", "monica-parameters/user-parameters/hermes-crop.json"]
-	}
+	"CropParameters": ["include-from-file", "monica-parameters/general/crop.json"]
 }
